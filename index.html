@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>CYT Finance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="header no-print">
+        <h1 id="headerName">CYT Finance</h1>
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+            <div style="display: flex; gap: 8px;">
+                <button class="btn-tema" onclick="toggleTheme()">🌗 Tema</button>
+                <button class="btn-tema" onclick="abrir('formPerfil')">👤 Perfil</button>
+                <button class="btn-tema" onclick="abrir('formBackup')">💾 Backup</button>
+                <button class="btn-imprimir" onclick="abrir('formImprimir')">🖨️ IMPRIMIR</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard no-print">
+        <div class="dash-card"><span>Saldo Geral Acumulado</span><h2 id="dashSaldo" class="blue">R$ 0,00</h2></div>
+        <div class="dash-card"><span>Entradas (Mês Atual)</span><h2 id="dashEntradas" class="green">R$ 0,00</h2></div>
+        <div class="dash-card"><span>Saídas (Mês Atual)</span><h2 id="dashSaidas" class="red">R$ 0,00</h2></div>
+    </div>
+
+    <div class="action-row no-print">
+        <button class="btn-action red" onclick="abrir('formGasto')">- Novo Gasto</button>
+        <button class="btn-action green" onclick="abrir('formRenda')">+ Entrada</button>
+        <button class="btn-action yellow" onclick="abrir('formSalario')">+ Salário</button>
+        <button class="btn-action purple" onclick="abrir('formDivida')">🤝 Pagar / Receber</button>
+        <button class="btn-action blue" onclick="abrir('formRecorrente')">↻ Recorrente</button>
+        <button class="btn-action orange" onclick="abrir('formInvestimento')">🪙 Investir</button>
+    </div>
+
+    <div id="formGasto" class="card escondido no-print">
+        <input type="text" id="valorGasto" placeholder="Valor Total (R$)">
+        <input type="text" id="descGasto" placeholder="Descrição">
+        <select id="catGasto">
+            <option value="Outros">Categoria: Outros</option>
+            <option value="Casa">Casa / Moradia</option>
+            <option value="Transporte">Transporte / Moto</option>
+            <option value="Alimentação">Alimentação</option>
+            <option value="Saúde">Saúde</option>
+            <option value="Lazer">Lazer</option>
+            <option value="Educação">Educação / Cursos</option>
+        </select>
+        <select id="tipoGasto" onchange="mudarTipoGasto(this.value)">
+            <option value="v">À Vista</option>
+            <option value="p">Parcelado</option>
+        </select>
+        <div id="pBox" class="escondido">
+            <input type="number" id="parcelasGasto" placeholder="Parcelas">
+            <select id="cartaoGasto"></select>
+        </div>
+        <input type="date" id="dataGasto">
+        <button class="btn-submit red" onclick="salvarGasto()">Gravar Gasto</button>
+    </div>
+    
+    <div id="formRenda" class="card escondido no-print"><input type="text" id="valorRenda" placeholder="Valor (R$)"><input type="text" id="descRenda" placeholder="Descrição"><input type="date" id="dataRenda"><button class="btn-submit green" onclick="salvarEntrada('extra')">Gravar Entrada</button></div>
+    <div id="formSalario" class="card escondido no-print"><input type="text" id="valorSalario" placeholder="Valor (R$)"><input type="text" id="descSalario" placeholder="Descrição" value="Salário"><input type="date" id="dataSalario"><button class="btn-submit yellow" onclick="salvarEntrada('salario')">Gravar Salário</button></div>
+    
+    <div id="formRecorrente" class="card escondido no-print"><input type="text" id="valorRec" placeholder="Valor Mensal (R$)"><input type="number" id="limiteRec" placeholder="Repetir por quantos meses? (Vazio = Infinito)"><input type="text" id="descRec" placeholder="Descrição"><input type="date" id="dataRec"><button class="btn-submit blue" onclick="salvarRecorrente()">Gravar Recorrente</button></div>
+    
+    <div id="formDivida" class="card escondido no-print"><select id="tipoDivida"><option value="divida">Devo Pagar</option><option value="credito">Vou Receber</option></select><input type="text" id="pessoaDivida" placeholder="Nome da Pessoa/Instituição"><input type="text" id="valorDivida" placeholder="Valor Total (R$)"><input type="number" id="parcelasDivida" placeholder="Quantos meses/parcelas? (Vazio = 1x)"><input type="text" id="descDivida" placeholder="Descrição"><input type="date" id="dataDivida"><button class="btn-submit" style="background:#7c3aed;" onclick="salvarDivida()">Gravar Pagar / Receber</button></div>
+
+    <div id="formInvestimento" class="card escondido no-print"><select id="catInv"><option value="cofrinho">Cofrinho</option><option value="renda_fixa">Renda Fixa</option><option value="variavel">Renda Variável</option></select><input type="text" id="valorInv" placeholder="Valor (R$)"><input type="text" id="descInv" placeholder="Descrição (Ex: Tesouro Direto)"><input type="date" id="dataInv"><button class="btn-submit" style="background:#ea580c;" onclick="salvarInvestimento()">Registrar Investimento</button></div>
+
+    <div id="formPerfil" class="card escondido no-print"><input type="text" id="perfilNome" placeholder="Seu Nome" onchange="salvarPerfil()"><input type="text" id="perfilTel" placeholder="Telefone" onchange="salvarPerfil()"><div id="listaCartoesPerfil"></div><input type="text" id="novoCartaoNome" placeholder="Nome Cartão"><input type="text" id="novoCartaoDigitos" placeholder="Final" maxlength="4"><input type="number" id="novoCartaoFechamento" placeholder="Dia Fechamento"><button class="btn-submit blue" onclick="addCartaoPerfil()">+ Cadastrar Cartão</button></div>
+    <div id="formBackup" class="card escondido no-print"><button class="btn-submit blue" onclick="gerarBackup()">📥 Backup Completo</button><button class="btn-submit green" style="margin-top:10px;" onclick="document.getElementById('inputBackup').click()">📤 Restaurar Backup</button><input type="file" id="inputBackup" style="display:none;" accept=".json" onchange="carregarBackup(event)"></div>
+    <div id="formImprimir" class="card escondido no-print"><input type="month" id="printInicio"><input type="month" id="printFim"><button class="btn-submit" onclick="processarImpressao()">🖨️ Imprimir Período</button></div>
+
+    <div class="no-print">
+        <details open>
+            <summary>📊 Relatório Estratégico (Projeção)</summary>
+            <div class="table-responsive">
+                <table id="tabProj">
+                    <thead><tr><th>MÊS/ANO</th><th>ENTRADAS</th><th>SAÍDAS</th><th>RESULTADO</th><th>CAIXA</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </details>
+
+        <div class="tab-buttons">
+            <button id="btnTabPesquisa" class="tab-btn" style="--tab-color:#0284c7;" onclick="toggleTab('tabPesquisa')">🔍 Busca</button>
+            <button id="btnTabDividas" class="tab-btn" style="--tab-color:#7c3aed;" onclick="toggleTab('tabDividas')">🤝 Pagar/Receber</button>
+            <button id="btnTabGrafico" class="tab-btn" style="--tab-color:#db2777;" onclick="toggleTab('tabGrafico')">📈 Gráficos</button>
+            <button id="btnTabAnt" class="tab-btn" style="--tab-color:#059669;" onclick="toggleTab('tabAnt')">⏳ Histórico</button>
+            <button id="btnTabInvestimentos" class="tab-btn" style="--tab-color:#ea580c;" onclick="toggleTab('tabInvestimentos')">🪙 Investimentos</button>
+            <button id="btnTabLogs" class="tab-btn" style="--tab-color:#475569;" onclick="toggleTab('tabLogs')">🛡️ Auditoria</button>
+        </div>
+
+        <div id="tabPesquisa" class="tab-content escondido"><div style="padding:20px;"><input type="text" id="searchBar" onkeyup="renderHist()" placeholder="Buscar por nome, valor ou data..."><div id="hist"></div></div></div>
+        <div id="tabAnt" class="tab-content escondido"><div class="table-responsive"><table id="tabAntTabela"><thead><tr><th>MÊS/ANO</th><th>ENTRADAS</th><th>SAÍDAS</th><th>RESULTADO</th><th>CAIXA</th></tr></thead><tbody id="tbodyAnt"></tbody></table></div></div>
+        
+        <div id="tabGrafico" class="tab-content escondido">
+            <div style="padding:15px; text-align:center;">
+                <select id="filtroGrafico" onchange="desenharGrafico()" style="margin-bottom:15px; border-color:var(--color-blue); font-weight:bold; width: 100%;">
+                    <option value="diario">Fluxo Diário (Mês Atual)</option>
+                    <option value="anual">Histórico Financeiro (12 Meses)</option>
+                </select>
+                <div style="height: 250px; margin-bottom: 30px;">
+                    <canvas id="graficoMes"></canvas>
+                </div>
+                <h3 style="color: var(--text-main); font-size: 16px; margin-bottom: 10px; border-top: 1px solid var(--border-color); padding-top: 20px;">Vazamento de Caixa (Mês Atual)</h3>
+                <div style="height: 250px; position: relative; width: 100%; display: flex; justify-content: center;">
+                    <canvas id="graficoRosca"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div id="tabInvestimentos" class="tab-content escondido"><div class="inv-header" style="padding:20px;"><h3 style="margin-top:0; color:#ea580c;">Meus Investimentos</h3><div id=\"invGrid\"></div></div></div>
+        <div id="tabDividas" class="tab-content escondido"><div style="padding:20px;"><h3 style="margin-top:0; color:#7c3aed;">Contas a Pagar / Receber</h3><div id=\"divGrid\"></div></div></div>
+        
+        <div id="tabLogs" class="tab-content escondido">
+            <div style="padding:20px;">
+                <div class="log-box" id="logs"></div>
+                <button onclick="confirmarZerar()" style="background:transparent; border:1px solid var(--color-red); color:var(--color-red); font-size:10px; font-weight:600; padding:6px 10px; border-radius:4px; margin-top:20px; cursor:pointer; float:right;">Zerar Sistema</button>
+                <div style="clear:both;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="areaImpressao" class="escondido"></div>
+
+    <div id="cytModal" class="modal-overlay escondido no-print">
+        <div class="modal-box">
+            <h3 id="cytModalTitle">Mensagem</h3>
+            <input type="text" id="cytModalInput" class="modal-input" placeholder="...">
+            <div class="modal-actions">
+                <button id="cytModalCancel" class="modal-btn cancel">Cancelar</button>
+                <button id="cytModalConfirm" class="modal-btn confirm">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
