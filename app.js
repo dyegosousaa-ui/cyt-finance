@@ -143,7 +143,7 @@ async function salvarGasto() {
     const v = normVal(document.getElementById('valorGasto').value);
     const pInput = document.getElementById('parcelasGasto').value;
     const isCard = document.getElementById('tipoGasto').value === 'p';
-    const cat = document.getElementById('catGasto').value;
+    const cat = document.getElementById('catGasto').value; // Categoria Capturada
     const p = isCard ? parseInt(pInput) : 1;
     const cartao = isCard ? document.getElementById('cartaoGasto').value : '';
     const desc = document.getElementById('descGasto').value;
@@ -449,6 +449,7 @@ function render() {
     let iterDate = new Date(dataMinima);
     let dataFim = new Date(hoje.getFullYear(), hoje.getMonth() + 24, 1);
 
+    // Variáveis do Dashboard (Mês Atual)
     let dashEntradas = 0;
     let dashSaidas = 0;
 
@@ -524,12 +525,15 @@ function render() {
         let s = entM - gasM;
         caixaAcumuladoTotal += s;
 
+        // Alimentar Dashboard
         if (isMesAtual) {
             dashEntradas = entM;
             dashSaidas = gasM;
             document.getElementById('dashSaldo').innerText = formatarMoeda(caixaAcumuladoTotal);
             document.getElementById('dashEntradas').innerText = formatarMoeda(dashEntradas);
             document.getElementById('dashSaidas').innerText = formatarMoeda(dashSaidas);
+            
+            // Cor do Saldo
             document.getElementById('dashSaldo').className = caixaAcumuladoTotal < 0 ? 'red' : 'blue';
         }
 
@@ -724,10 +728,7 @@ function gerarHtmlImpressaoCustom(dateInicio, dateFim) {
         if (isImprimir) {
             html += `
                 <tr>
-                    <td style="border-bottom:1px solid #ccc; padding:8px; text-transform:capitalize; font-weight:700; line-height:1.3;">
-                        ${iter.toLocaleString('pt-BR', { month: 'long' })}<br>
-                        <span style="font-size:11px; font-weight:500; color:#64748b;">${iter.getFullYear()}</span>
-                    </td>
+                    <td style="border-bottom:1px solid #ccc; padding:8px; text-transform:capitalize; font-weight:600;">${iter.toLocaleString('pt-BR',{month:'short', year:'numeric'})}</td>
                     <td style="border-bottom:1px solid #ccc; padding:8px; color: #047857;">${formatarMoeda(entM)}</td>
                     <td style="border-bottom:1px solid #ccc; padding:8px; color: #b91c1c;">${formatarMoeda(gasM)}</td>
                     <td style="border-bottom:1px solid #ccc; padding:8px; font-weight:bold; color:${s<0?'#b91c1c':'#047857'}">${formatarMoeda(s)}</td>
@@ -756,6 +757,7 @@ function desenharGrafico() {
     let labels = []; let dataValues = []; let bgColors = [];
     const h = new Date(); const yH = h.getFullYear(); const mH = h.getMonth();
 
+    // VARIÁVEIS PARA O GRÁFICO DE ROSCA (Apenas Mês Atual)
     let catTotals = { "Casa": 0, "Transporte": 0, "Alimentação": 0, "Saúde": 0, "Lazer": 0, "Educação": 0, "Outros": 0 };
 
     if (tipo === 'diario') {
@@ -779,7 +781,7 @@ function desenharGrafico() {
                 let diff = (yH - r.y)*12 + (mH - r.m); 
                 if(diff>=0 && (!r.p || diff<r.p) && r.dia===i) {
                     gDia += r.v;
-                    catTotals["Outros"] += r.v;
+                    catTotals["Outros"] += r.v; // Recorrentes entram em Outros por padrão
                 } 
             });
             investimentos.forEach(inv => { if(inv.y===yH && inv.m===mH && inv.dia===i) gDia+=inv.v; });
@@ -809,6 +811,7 @@ function desenharGrafico() {
                     if (!g.quitadas || !g.quitadas.includes(numParc)) {
                         let valorParcela = (g.v/g.p);
                         gMes += valorParcela;
+                        // Alimenta Rosca apenas se o loop estiver no mês atual
                         if(yC === yH && mC === mH) {
                             let cat = g.cat || "Outros";
                             if(catTotals[cat] !== undefined) catTotals[cat] += valorParcela; else catTotals["Outros"] += valorParcela;
@@ -841,6 +844,7 @@ function desenharGrafico() {
 
     const isDark = document.body.classList.contains('dark-theme');
     
+    // Gráfico de Barras Principal
     meuGrafico = new Chart(canvas.getContext('2d'), {
         type: 'bar',
         data: { labels: labels, datasets: [{ data: dataValues, backgroundColor: bgColors, borderRadius: 3 }] },
@@ -851,6 +855,7 @@ function desenharGrafico() {
         }
     });
 
+    // Filtra categorias vazias para o Gráfico de Rosca
     let roscaLabels = []; let roscaData = [];
     let roscaColors = ['#3b82f6', '#f59e0b', '#ef4444', '#10b981', '#8b5cf6', '#ec4899', '#64748b'];
     Object.keys(catTotals).forEach(cat => {
