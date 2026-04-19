@@ -29,11 +29,11 @@
     </div>
 
     <div class="action-row no-print">
-        <button class="btn-action red" onclick="abrir('formGasto')">- Novo Gasto</button>
-        <button class="btn-action green" onclick="abrir('formRenda')">+ Entrada</button>
-        <button class="btn-action yellow" onclick="abrir('formSalario')">+ Salário</button>
-        <button class="btn-action purple" onclick="abrir('formDivida')">🤝 Pagar / Receber</button>
-        <button class="btn-action blue" onclick="abrir('formRecorrente')">↻ Recorrente</button>
+        <button class="btn-action red" onclick="abrir('formGasto')">💸- Novo Gasto</button>
+        <button class="btn-action green" onclick="abrir('formRenda')">💰+ Entrada</button>
+        <button class="btn-action yellow" onclick="abrir('formSalario')">💼+ Salário</button>
+        <button class="btn-action purple" onclick="abrir('formDivida')">🤝 valores Informais</button>
+        <button class="btn-action blue" onclick="abrir('formRecorrente')">♻️ Recorrente</button>
         <button class="btn-action orange" onclick="abrir('formInvestimento')">🪙 Investir</button>
     </div>
 
@@ -99,7 +99,7 @@
         
         <div id="tabGrafico" class="tab-content escondido">
             <div style="padding:15px; text-align:center;">
-                <select id="filtroGrafico" onchange="desenharGrafico()" style="margin-bottom:15px; border-color:var(--color-blue); font-weight:bold; width: 100%;">
+                <select id="filtroGrafico" onchange="if(typeof desenharGrafico === 'function') desenharGrafico()" style="margin-bottom:15px; border-color:var(--color-blue); font-weight:bold; width: 100%;">
                     <option value="diario">Fluxo Diário (Mês Atual)</option>
                     <option value="anual">Histórico Financeiro (12 Meses)</option>
                 </select>
@@ -113,8 +113,8 @@
             </div>
         </div>
 
-        <div id="tabInvestimentos" class="tab-content escondido"><div class="inv-header" style="padding:20px;"><h3 style="margin-top:0; color:#ea580c;">Meus Investimentos</h3><div id=\"invGrid\"></div></div></div>
-        <div id="tabDividas" class="tab-content escondido"><div style="padding:20px;"><h3 style="margin-top:0; color:#7c3aed;">Contas a Pagar / Receber</h3><div id=\"divGrid\"></div></div></div>
+        <div id="tabInvestimentos" class="tab-content escondido"><div class="inv-header" style="padding:20px;"><h3 style="margin-top:0; color:#ea580c;">Meus Investimentos</h3><div id="invGrid"></div></div></div>
+        <div id="tabDividas" class="tab-content escondido"><div style="padding:20px;"><h3 style="margin-top:0; color:#7c3aed;">Contas a Pagar / Receber</h3><div id="divGrid"></div></div></div>
         
         <div id="tabLogs" class="tab-content escondido">
             <div style="padding:20px;">
