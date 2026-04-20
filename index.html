@@ -43,7 +43,7 @@
         <select id="catGasto">
             <option value="Outros">Categoria: Outros</option>
             <option value="Casa">Casa / Moradia</option>
-            <option value="Transporte">Transporte / Moto</option>
+            <option value="Transporte">Transporte / veiculo</option>
             <option value="Alimentação">Alimentação</option>
             <option value="Saúde">Saúde</option>
             <option value="Lazer">Lazer</option>
@@ -71,7 +71,7 @@
     <div id="formInvestimento" class="card escondido no-print"><select id="catInv"><option value="cofrinho">Cofrinho</option><option value="renda_fixa">Renda Fixa</option><option value="variavel">Renda Variável</option></select><input type="text" id="valorInv" placeholder="Valor (R$)"><input type="text" id="descInv" placeholder="Descrição (Ex: Tesouro Direto)"><input type="date" id="dataInv"><button class="btn-submit" style="background:#ea580c;" onclick="salvarInvestimento()">Registrar Investimento</button></div>
 
     <div id="formPerfil" class="card escondido no-print"><input type="text" id="perfilNome" placeholder="Seu Nome" onchange="salvarPerfil()"><input type="text" id="perfilTel" placeholder="Telefone" onchange="salvarPerfil()"><div id="listaCartoesPerfil"></div><input type="text" id="novoCartaoNome" placeholder="Nome Cartão"><input type="text" id="novoCartaoDigitos" placeholder="Final" maxlength="4"><input type="number" id="novoCartaoFechamento" placeholder="Dia Fechamento"><button class="btn-submit blue" onclick="addCartaoPerfil()">+ Cadastrar Cartão</button></div>
-    <div id="formBackup" class="card escondido no-print"><button class="btn-submit blue" onclick="gerarBackup()">📥 Backup Completo</button><button class="btn-submit green" style="margin-top:10px;" onclick="document.getElementById('inputBackup').click()">📤 Restaurar Backup</button><input type="file" id="inputBackup" style="display:none;" accept=".json" onchange="carregarBackup(event)"></div>
+    <div id="formBackup" class="card escondido no-print"><button class="btn-submit blue" onclick="gerarBackup()">📥 Backup </button><button class="btn-submit green" style="margin-top:10px;" onclick="document.getElementById('inputBackup').click()">📤 Restaurar Backup</button><input type="file" id="inputBackup" style="display:none;" accept=".json" onchange="carregarBackup(event)"></div>
     <div id="formImprimir" class="card escondido no-print"><input type="month" id="printInicio"><input type="month" id="printFim"><button class="btn-submit" onclick="processarImpressao()">🖨️ Imprimir Período</button></div>
 
     <div class="no-print">
